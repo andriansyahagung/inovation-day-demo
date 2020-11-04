@@ -1,0 +1,7 @@
+---
+DMZ:
+  hosts:
+    apic119:
+      inventory_hostname: apic119
+      username: admin
+      password: password

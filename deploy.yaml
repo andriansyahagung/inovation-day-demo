@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: php-pipeline-inovationday
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: php-pipeline-inovationday
+  template:
+    metadata:
+      labels:
+        app: php-pipeline-inovationday
+    spec:
+      containers:
+        - name: php-pipeline-inovationday
+          image: ${REPOSITORY_TAG}
+          ports:
+            - containerPort: 80
+          env:
+            - name: PORT
+              value: "80"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    run: php-pipeline-inovationday
+  name: php-pipeline-inovationday
+  namespace: dev
+spec:
+  type: LoadBalancer
+  selector:
+    app: php-pipeline-inovationday
+  ports:
+    - name: php-pipeline-inovationday-port
+      port: 80
+      targetPort: 80

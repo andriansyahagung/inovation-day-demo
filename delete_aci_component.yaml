@@ -1,0 +1,68 @@
+---
+    - name : Configuring Tenant
+      hosts : DMZ
+      connection : local
+      gather_facts: no
+    
+      tasks:
+      - name: Create a New Tenant
+        aci_tenant:
+          host: "{{ inventory_hostname }}"
+          username: "{{ username }}"
+          password: "{{ password }}"
+          tenant: inovation-day-TN
+          description: "Tenant configured by Ansible"
+          validate_certs: no
+          state: absent
+    
+    
+      - name: create a new VRF
+        aci_vrf:
+          hostname: "{{ inventory_hostname }}"
+          username: "{{ username }}"
+          password: "{{ password }}"
+          validate_certs: False
+          vrf: inovation-day-VRF
+          tenant: inovation-day-TN
+          descr: "Ansible created VRF"
+          policy_control_preference: enforced
+          policy_control_direction: ingress
+          state: absent
+    
+      - name: create a new BD
+        aci_bd:
+          hostname: "{{ inventory_hostname }}"
+          username: "{{ username }}"
+          password: "{{ password }}"
+          validate_certs: False
+          tenant: inovation-day-TN
+          vrf: inovation-day-VRF
+          bd: inovation-day-BD
+          enable_routing: yes
+          arp_flooding: no
+          l2_unknown_unicast: flood
+          state: absent
+    
+      - name: create Application Profile
+        aci_ap:
+          hostname: "{{ inventory_hostname }}"
+          username: "{{ username }}"
+          password: "{{ password }}"
+          validate_certs: False
+          ap: inovation-day-AP
+          tenant: inovation-day-TN
+          description: "Ansible created AP"
+          state: absent
+    
+      - name: create EPG 
+        aci_epg:
+          hostname: "{{ inventory_hostname }}"
+          username: "{{ username }}"
+          password: "{{ password }}"
+          validate_certs: False
+          tenant: inovation-day-TN
+          ap: inovation-day-AP
+          epg: inovation-day-EPG
+          bd: inovation-day-BD
+          descr: "Ansible created EPG"
+          state: absent
